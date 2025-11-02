@@ -3,6 +3,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
+import org.openqa.selenium.ElementNotInteractableException;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -52,7 +55,7 @@ public class App {
                 // Fill in registration form
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("input-firstname"))).sendKeys("Jane");
                 driver.findElement(By.id("input-lastname")).sendKeys("Doe");
-                driver.findElement(By.id("input-email")).sendKeys("Jane.Doe000@example.com");
+                driver.findElement(By.id("input-email")).sendKeys("Jane.Doe123@example.com");
                 driver.findElement(By.id("input-telephone")).sendKeys("0400000000");
                 driver.findElement(By.id("input-password")).sendKeys("1234");
                 driver.findElement(By.id("input-confirm")).sendKeys("1234");
@@ -106,7 +109,7 @@ public class App {
 
                 // --- Fill in login form ---
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("input-email")))
-                        .sendKeys("Jane.Doe000@example.com");
+                        .sendKeys("Jane.Doe123@example.com");
                 driver.findElement(By.id("input-password")).sendKeys("1234");
 
                 // Click Login button
@@ -124,12 +127,59 @@ public class App {
         }
     };
 
+    // T003 Add an item to the cart
+    static TestCase addItemToCart = new TestCase() {
+        public String getName() {
+            return "TC003 - Add an item to the cart";
+        }
+
+        public void run() throws Exception {
+            WebDriver driver = new ChromeDriver();
+            try {
+                // Navigate to home page
+                WebDriverWait wait = new WebDriverWait(driver, TIMEOUT);
+                driver.get("https://ecommerce-playground.lambdatest.io/index.php?route=product/category&path=25");
+                driver.manage().window().maximize();
+
+                // Click on “Apple Cinema 30”
+                WebElement appleCinema = wait.until(ExpectedConditions.elementToBeClickable(
+                        By.xpath("//a[normalize-space()='Apple Cinema 30\"']")));
+                appleCinema.click();
+
+                // Click on “Please select” dropdown
+                WebElement selectDropdown = wait.until(ExpectedConditions.elementToBeClickable(
+                        By.id("input-option231-216836")));
+                selectDropdown.click();
+
+                // Select “Medium” size
+                WebElement mediumOption = wait.until(ExpectedConditions.elementToBeClickable(
+                        By.xpath("//option[normalize-space()='Medium (-$28.80)']")));
+                mediumOption.click();
+                driver.findElement(By.cssSelector("h1")).click();
+
+                // Add item to cart
+                By addToCartLocator = By.xpath("//button[contains(@class,'btn-cart') and @title='Add to Cart']");
+                WebElement addBtn = new WebDriverWait(driver, Duration.ofSeconds(15))
+                        .until(ExpectedConditions.presenceOfElementLocated(addToCartLocator));
+                addBtn.click();
+
+                wait.until(ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector(".alert-success")));
+                System.out.println("Apple Cinema 30 (Medium) added to cart successfully!");
+
+            } finally {
+                driver.quit();
+            }
+        }
+    };
+
     public static void main(String[] args) {
         System.setProperty("webdriver.chrome.driver", "./src/Driver/chromedriver");
 
         List<TestCase> tests = new ArrayList<>();
         tests.add(registerAccount);
         tests.add(register);
+        tests.add(addItemToCart);
 
         // Run all test cases
         for (TestCase test : tests) {
