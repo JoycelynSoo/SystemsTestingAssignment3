@@ -20,7 +20,7 @@ public class App {
         void run() throws Exception;
     }
 
-    // TC001: Hover over My Account and click Register
+    // T001: Register a new account
     static TestCase registerAccount = new TestCase() {
         public String getName() {
             return "TC001 - Register Account";
@@ -29,10 +29,12 @@ public class App {
         public void run() throws Exception {
             WebDriver driver = new ChromeDriver();
             try {
+                // Navigate to home page
                 WebDriverWait wait = new WebDriverWait(driver, TIMEOUT);
                 driver.get(BASE_URL);
                 driver.manage().window().maximize();
 
+                // Hover over "My account"
                 WebElement myAccount = wait.until(ExpectedConditions.visibilityOfElementLocated(
                         By.xpath(
                                 "//a[contains(@class,'dropdown-toggle') and .//span[contains(text(),'My account')]]")));
@@ -40,19 +42,41 @@ public class App {
                 Actions actions = new Actions(driver);
                 actions.moveToElement(myAccount).perform();
 
+                // Click on "Register" link
                 WebElement registerLink = wait.until(ExpectedConditions.elementToBeClickable(
                         By.xpath("//a[normalize-space()='Register']")));
                 registerLink.click();
-
                 wait.until(ExpectedConditions.titleContains("Register Account"));
                 System.out.println("Navigated to Register page successfully!");
+
+                // Fill in registration form
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("input-firstname"))).sendKeys("Jane");
+                driver.findElement(By.id("input-lastname")).sendKeys("Doe");
+                driver.findElement(By.id("input-email")).sendKeys("Jane.Doe000@example.com");
+                driver.findElement(By.id("input-telephone")).sendKeys("0400000000");
+                driver.findElement(By.id("input-password")).sendKeys("1234");
+                driver.findElement(By.id("input-confirm")).sendKeys("1234");
+                WebElement subscribeNo = driver.findElement(By.xpath("//input[@name='newsletter' and @value='0']"));
+                if (!subscribeNo.isSelected())
+                    subscribeNo.click();
+                WebElement privacyLabel = driver.findElement(By.cssSelector("label[for='input-agree']"));
+                privacyLabel.click();
+
+                // Click Continue
+                driver.findElement(By.xpath("//input[@value='Continue']")).click();
+
+                // Confirm success
+                wait.until(ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath("//h1[normalize-space()='Your Account Has Been Created!']")));
+                System.out.println("Registration successful for Jane Doe");
+
             } finally {
                 driver.quit();
             }
         }
     };
 
-    // ✅ TC002: Dummy test
+    // TC002: Dummy test
     static TestCase register = new TestCase() {
         public String getName() {
             return "TC002 - Dummy Test";
