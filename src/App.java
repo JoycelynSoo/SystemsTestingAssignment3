@@ -76,18 +76,48 @@ public class App {
         }
     };
 
-    // TC002: Dummy test
+    // T002: User Login
     static TestCase register = new TestCase() {
         public String getName() {
-            return "TC002 - Dummy Test";
+            return "TC002 - User Login";
         }
 
         public void run() throws Exception {
             WebDriver driver = new ChromeDriver();
             try {
+                // Navigate to home page
+                WebDriverWait wait = new WebDriverWait(driver, TIMEOUT);
                 driver.get(BASE_URL);
                 driver.manage().window().maximize();
-                System.out.println("Dummy test executed successfully!");
+
+                // Hover over "My account"
+                WebElement myAccount = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath(
+                                "//a[contains(@class,'dropdown-toggle') and .//span[contains(text(),'My account')]]")));
+                Actions actions = new Actions(driver);
+                actions.moveToElement(myAccount).perform();
+
+                // Click on "Register" link
+                WebElement loginLink = wait.until(ExpectedConditions.elementToBeClickable(
+                        By.xpath("//a[normalize-space()='Login']")));
+                loginLink.click();
+                wait.until(ExpectedConditions.titleContains("Account Login"));
+                System.out.println("Navigated to Login page successfully!");
+
+                // --- Fill in login form ---
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("input-email")))
+                        .sendKeys("Jane.Doe000@example.com");
+                driver.findElement(By.id("input-password")).sendKeys("1234");
+
+                // Click Login button
+                WebElement loginButton = driver.findElement(By.xpath("//input[@value='Login']"));
+                loginButton.click();
+
+                // Wait for successful login to the Account dashboard
+                wait.until(ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath("//h2[normalize-space()='My Account']")));
+
+                System.out.println("Login successful for Jane.Doe000@example.com");
             } finally {
                 driver.quit();
             }
