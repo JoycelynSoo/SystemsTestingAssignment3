@@ -235,6 +235,64 @@ public class App {
             }
         }
     };
+
+    // T005: Remove an item from the Cart
+    static TestCase removeItemFromCart = new TestCase() {
+        public String getName() {
+            return "T005 - Remove an item from the Cart";
+        }
+
+        public void run() throws Exception {
+            // WebDriver driver = new EdgeDriver();
+            WebDriver driver = new ChromeDriver();
+            try {
+                // Go to the Software catalogue page
+                WebDriverWait wait = new WebDriverWait(driver, TIMEOUT);
+                driver.get("https://ecommerce-playground.lambdatest.io/index.php?route=product/category&path=17");
+                driver.manage().window().maximize();
+
+                // Navigate to the 3rd page by clicking on the “3” page button
+                WebElement pageThree = wait.until(ExpectedConditions.elementToBeClickable(
+                        By.xpath("//a[contains(@class,'page-link') and normalize-space(text())='3']")));
+                pageThree.click();
+
+                // Click on the item named “Palm Treo Pro”
+                WebElement palmTreoProProduct = wait.until(ExpectedConditions.elementToBeClickable(
+                        By.xpath("//a[normalize-space()='Palm Treo Pro']")));
+                palmTreoProProduct.click();
+                Thread.sleep(3000);
+
+                // Click the “Add to Cart” button to add the item to the cart
+                WebElement container = driver.findElement(By.id("entry_216842"));
+                WebElement addToCartButton = wait.until(ExpectedConditions.elementToBeClickable(
+                        container.findElement(By.cssSelector("button[class*='btn-cart']"))
+                ));               
+                addToCartButton.click();
+                Thread.sleep(3000);
+
+                // Wait for cart notification to pop up and click the "View Cart" button to navigate to the Shopping Cart page
+                By findPopUp = By.cssSelector("div.toast.m-3.fade.show");
+                WebElement popUpCartNotification = wait.until(ExpectedConditions.visibilityOfElementLocated(findPopUp));
+                WebElement popUpCartButton = popUpCartNotification.findElement(By.cssSelector("a.btn.btn-primary.btn-block"));
+                wait.until(ExpectedConditions.elementToBeClickable(popUpCartButton));
+                popUpCartButton.click();
+
+                // Click the delete button to remove the item from the cart
+                WebElement deleteButton = driver.findElement(By.cssSelector("button[class='btn btn-danger']"));
+                deleteButton.click();
+
+                // Verify that the item has been successfully removed from the cart - will return fail if the "Your shopping cart is empty" message doesn't appear
+                wait.until(ExpectedConditions.presenceOfElementLocated(
+                        By.xpath("//p[contains(text(),'Your shopping cart is empty')]")
+                ));
+                System.out.println("Item has been successfully removed from cart!");
+                Thread.sleep(3000);
+
+            } finally {
+                driver.quit();
+            }
+        }
+    };
  
     // T007 Product Comparison
     static TestCase productComparison = new TestCase() {
