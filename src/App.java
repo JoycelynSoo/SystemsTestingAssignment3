@@ -530,6 +530,9 @@ public class App {
         tests.add(registerAccount);
         tests.add(loginToAccount);
         tests.add(addItemToCart);
+        tests.add(updateCartQuantity);
+        tests.add(removeItemFromCart);
+        tests.add(placeOrderCheckout);
         tests.add(productComparison);
         tests.add(addProductWishList);
         tests.add(writeProductReview);
