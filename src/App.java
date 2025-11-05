@@ -293,6 +293,81 @@ public class App {
             }
         }
     };
+
+    // T006: Checkout and place an order for the items in the cart
+    static TestCase placeOrderCheckout = new TestCase() {
+        public String getName() {
+            return "T006 - Checkout and place an order for the items in the cart";
+        }
+
+        public void run() throws Exception {
+            //WebDriver driver = new EdgeDriver();
+            WebDriver driver = new ChromeDriver();
+            try {
+                // Go to the iMac product page
+                WebDriverWait wait = new WebDriverWait(driver, TIMEOUT);
+                driver.get("https://ecommerce-playground.lambdatest.io/index.php?route=product/product&product_id=54");
+                driver.manage().window().maximize();
+
+                // Click the "Buy Now" button to navigate directly to Checkout
+                WebElement container = driver.findElement(By.id("entry_216843"));
+                WebElement buyNowButton = wait.until(ExpectedConditions.elementToBeClickable(
+                        container.findElement(By.cssSelector("button[class*='btn-buynow']"))
+                ));               
+                buyNowButton.click();
+                Thread.sleep(3000);
+                System.out.println("Item has been placed in cart!");
+
+                // Click the "Guest Checkout" radio button to checkout as a Guest
+                driver.findElement(By.cssSelector("label[for='input-account-guest']")).click();
+                Thread.sleep(3000);
+                
+                // Complete the “Your Personal Details” section by filling the following fields:
+                // In the First Name field, add “Jane”
+                // In the Last Name field, add “Doe”
+                // In the Email field, add “Jane.Doe123@example.com”
+                // In the Telephone field, add “0400000000”
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("input-payment-firstname"))).sendKeys("Jane");
+                driver.findElement(By.id("input-payment-lastname")).sendKeys("Doe");
+                driver.findElement(By.id("input-payment-email")).sendKeys("Jane.Doe123@example.com");
+                driver.findElement(By.id("input-payment-telephone")).sendKeys("0400000000");
+
+                //Complete the “Billing Address” section by filling the following fields:
+                // In the Address 1 field, add “123 Testing Street”
+                // In the City field, add “Systems”
+                // In the Postcode field, add “1234”
+                // Keep the Country field as “United Kingdom”
+                // Keep the Region / State as “Lancashire”
+                driver.findElement(By.id("input-payment-address-1")).sendKeys("123 Testing Street");
+                driver.findElement(By.id("input-payment-city")).sendKeys("Systems");
+                driver.findElement(By.id("input-payment-postcode")).sendKeys("1234");
+                
+                // Tick the “I have read and agree to the Terms & Conditions” checkbox
+                WebElement checkboxLabel = driver.findElement(By.cssSelector("label[for='input-agree']"));
+                checkboxLabel.click();
+                
+                // Continue with the checkout process by clicking the "Continue" button
+                WebElement continueButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("button-save")));
+                continueButton.click();
+                Thread.sleep(3000);
+
+                // Review the order and click the “Confirm Order” button to place the order
+                WebElement confirmButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("button-confirm")));
+                confirmButton.click();
+                Thread.sleep(3000);
+
+                // Verify that the order has been successfully placed - will return fail if the "Your order has been successfully processed!" message doesn't appear
+                wait.until(ExpectedConditions.presenceOfElementLocated(
+                        By.xpath("//p[contains(text(),'Your order has been successfully processed!')]")
+                ));
+                System.out.println("Item has been successfully checked out and an order has been placed!");
+                Thread.sleep(3000);
+
+            } finally {
+                driver.quit();
+            }
+        }
+    };
  
     // T007 Product Comparison
     static TestCase productComparison = new TestCase() {
