@@ -195,7 +195,7 @@ public class App {
                 WebElement palmTreoProProduct = wait.until(ExpectedConditions.elementToBeClickable(
                         By.xpath("//a[normalize-space()='Palm Treo Pro']")));
                 palmTreoProProduct.click();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
 
                 
                 // Click the “Add to Cart” button to add the item to the cart
@@ -204,7 +204,7 @@ public class App {
                         container.findElement(By.cssSelector("button[class*='btn-cart']"))
                 ));               
                 addToCartButton.click();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
 
                 // Wait for cart notification to pop up and click the "View Cart" button to navigate to the Shopping Cart page
                 By findPopUp = By.cssSelector("div.toast.m-3.fade.show");
@@ -212,7 +212,7 @@ public class App {
                 WebElement popUpCartButton = popUpCartNotification.findElement(By.cssSelector("a.btn.btn-primary.btn-block"));
                 wait.until(ExpectedConditions.elementToBeClickable(popUpCartButton));
                 popUpCartButton.click();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
 
                 // Clear existing quantity and input new quantity
                 driver.findElement(By.cssSelector("input.form-control")).clear();
@@ -222,13 +222,13 @@ public class App {
                 driver.findElement(By.cssSelector("h1")).click(); 
                 WebElement updateButton = driver.findElement(By.cssSelector("button[class='btn btn-primary']"));
                 updateButton.click();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
 
                 // Verify that the quantity has been successfully updated - will return fail if the "Success: You have modified your shopping cart!" message doesn't appear
                 wait.until(ExpectedConditions.presenceOfElementLocated(
                         By.xpath("//div[contains(text(),'You have modified your shopping cart!')]")
                 ));
-                Thread.sleep(3000);
+                Thread.sleep(1000);
 
             } finally {
                 driver.quit();
@@ -260,7 +260,7 @@ public class App {
                 WebElement palmTreoProProduct = wait.until(ExpectedConditions.elementToBeClickable(
                         By.xpath("//a[normalize-space()='Palm Treo Pro']")));
                 palmTreoProProduct.click();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
 
                 // Click the “Add to Cart” button to add the item to the cart
                 WebElement container = driver.findElement(By.id("entry_216842"));
@@ -268,7 +268,7 @@ public class App {
                         container.findElement(By.cssSelector("button[class*='btn-cart']"))
                 ));               
                 addToCartButton.click();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
 
                 // Wait for cart notification to pop up and click the "View Cart" button to navigate to the Shopping Cart page
                 By findPopUp = By.cssSelector("div.toast.m-3.fade.show");
@@ -286,7 +286,7 @@ public class App {
                         By.xpath("//p[contains(text(),'Your shopping cart is empty')]")
                 ));
                 System.out.println("Item has been successfully removed from cart!");
-                Thread.sleep(3000);
+                Thread.sleep(1000);
 
             } finally {
                 driver.quit();
@@ -315,12 +315,12 @@ public class App {
                         container.findElement(By.cssSelector("button[class*='btn-buynow']"))
                 ));               
                 buyNowButton.click();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
                 System.out.println("Item has been placed in cart!");
 
                 // Click the "Guest Checkout" radio button to checkout as a Guest
                 driver.findElement(By.cssSelector("label[for='input-account-guest']")).click();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
                 
                 // Complete the “Your Personal Details” section by filling the following fields:
                 // In the First Name field, add “Jane”
@@ -349,19 +349,19 @@ public class App {
                 // Continue with the checkout process by clicking the "Continue" button
                 WebElement continueButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("button-save")));
                 continueButton.click();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
 
                 // Review the order and click the “Confirm Order” button to place the order
                 WebElement confirmButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("button-confirm")));
                 confirmButton.click();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
 
                 // Verify that the order has been successfully placed - will return fail if the "Your order has been successfully processed!" message doesn't appear
                 wait.until(ExpectedConditions.presenceOfElementLocated(
                         By.xpath("//p[contains(text(),'Your order has been successfully processed!')]")
                 ));
                 System.out.println("Item has been successfully checked out and an order has been placed!");
-                Thread.sleep(3000);
+                Thread.sleep(1000);
 
             } finally {
                 driver.quit();
