@@ -9,6 +9,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+// import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -164,6 +165,71 @@ public class App {
                         .until(ExpectedConditions.presenceOfElementLocated(addToCartLocator));
                 ((JavascriptExecutor) driver).executeScript("arguments[0].click();", addBtn);
  
+            } finally {
+                driver.quit();
+            }
+        }
+    };
+
+    // T004: Update quantity of an item in the cart 
+    static TestCase updateCartQuantity = new TestCase() {
+        public String getName() {
+            return "T004 - Update quantity of an item in the cart ";
+        }
+
+        public void run() throws Exception {
+            // WebDriver driver = new EdgeDriver();
+            WebDriver driver = new ChromeDriver();
+            try {
+                // Go to the Software catalogue page
+                WebDriverWait wait = new WebDriverWait(driver, TIMEOUT);
+                driver.get("https://ecommerce-playground.lambdatest.io/index.php?route=product/category&path=17");
+                driver.manage().window().maximize();
+
+                // Navigate to the 3rd page by clicking on the “3” page button
+                WebElement pageThree = wait.until(ExpectedConditions.elementToBeClickable(
+                        By.xpath("//a[contains(@class,'page-link') and normalize-space(text())='3']")));
+                pageThree.click();
+
+                // Click on the item named “Palm Treo Pro”
+                WebElement palmTreoProProduct = wait.until(ExpectedConditions.elementToBeClickable(
+                        By.xpath("//a[normalize-space()='Palm Treo Pro']")));
+                palmTreoProProduct.click();
+                Thread.sleep(3000);
+
+                
+                // Click the “Add to Cart” button to add the item to the cart
+                WebElement container = driver.findElement(By.id("entry_216842"));
+                WebElement addToCartButton = wait.until(ExpectedConditions.elementToBeClickable(
+                        container.findElement(By.cssSelector("button[class*='btn-cart']"))
+                ));               
+                addToCartButton.click();
+                Thread.sleep(3000);
+
+                // Wait for cart notification to pop up and click the "View Cart" button to navigate to the Shopping Cart page
+                By findPopUp = By.cssSelector("div.toast.m-3.fade.show");
+                WebElement popUpCartNotification = wait.until(ExpectedConditions.visibilityOfElementLocated(findPopUp));
+                WebElement popUpCartButton = popUpCartNotification.findElement(By.cssSelector("a.btn.btn-primary.btn-block"));
+                wait.until(ExpectedConditions.elementToBeClickable(popUpCartButton));
+                popUpCartButton.click();
+                Thread.sleep(3000);
+
+                // Clear existing quantity and input new quantity
+                driver.findElement(By.cssSelector("input.form-control")).clear();
+                driver.findElement(By.cssSelector("input.form-control")).sendKeys("4");
+
+                // Click Update symbol to change item quantity
+                driver.findElement(By.cssSelector("h1")).click(); 
+                WebElement updateButton = driver.findElement(By.cssSelector("button[class='btn btn-primary']"));
+                updateButton.click();
+                Thread.sleep(3000);
+
+                // Verify that the quantity has been successfully updated - will return fail if the "Success: You have modified your shopping cart!" message doesn't appear
+                wait.until(ExpectedConditions.presenceOfElementLocated(
+                        By.xpath("//div[contains(text(),'You have modified your shopping cart!')]")
+                ));
+                Thread.sleep(3000);
+
             } finally {
                 driver.quit();
             }
